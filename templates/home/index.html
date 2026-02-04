@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Home · Triplit{% endblock %}
+
+{% block content %}
+  <div class="p-4 p-md-5 mb-4 rounded text-bg-light border">
+    <div class="col-lg-8 px-0">
+      <h1 class="display-6">Flask scaffold is ready</h1>
+      <p class="lead my-3">
+        Routes → controllers → templates → static assets are wired up.
+      </p>
+      <p class="mb-0">
+        Try <a href="/health">/health</a> for a JSON check.
+      </p>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Next step</h5>
+          <p class="card-text">Add a new blueprint in <code>routes/</code> and a controller in <code>controllers/</code>.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Assets</h5>
+          <p class="card-text">Edit <code>static/css/app.css</code> and <code>static/js/app.js</code> to customize UI.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

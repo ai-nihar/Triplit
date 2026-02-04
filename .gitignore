@@ -1,5 +1,24 @@
-.venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Virtual environments
+.env/
+.venv/
+venv/
+
+# Local env/config
 .env
+instance/
+
+# Editors/OS
 .vscode/
+.DS_Store
+Thumbs.db

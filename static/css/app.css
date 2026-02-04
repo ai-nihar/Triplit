@@ -1,0 +1,13 @@
+/* Minimal app styling */
+
+:root {
+  --brand: #1f6feb;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+a {
+  color: var(--brand);
+}
