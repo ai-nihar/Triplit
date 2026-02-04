@@ -1,1 +1,3 @@
-// App scripts
+// App JS entry
+
+console.log("Triplit loaded");
