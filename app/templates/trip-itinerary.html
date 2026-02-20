@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Itinerary — Tripify</title>
+    <meta name="description" content="Your trip itinerary with day-by-day locations and photos.">
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- CSS: Global → Page → Modal -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/trip-itinerary.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/location-modal.css')}}">
+
+    <!-- Auth state for JS -->
+    <script>
+        window.IS_LOGGED_IN = {{ 'true' if is_logged_in else 'false' }};
+        window.is_logged_in = {{ 'true' if is_logged_in else 'false' }};
+    </script>
+
+    <!-- Shared location card component -->
+    <script src="{{url_for('static',filename='js/location-card.js')}}?v=4"></script>
+</head>
+
+<body class="light">
+
+    {% include 'navbar.html' %}
+
+    <div class="mt-5">
+        <header class="box-glass">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4 pt-4">
+                    <h1 class="fw-bold">Trip Itinerary</h1>
+                    <button onclick="window.location.href='/dashboard'" class="btn btn-outline-dark rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Back to Trips
+                    </button>
+                </div>
+                <p class="text-dark opacity-75 mb-0">Review your travel plan with detailed locations and photos.</p>
+            </div>
+        </header>
+    </div>
+
+    <main class="py-5">
+        <div class="container">
+            <div id="itinerary-container" class="itinerary-container">
+                <!-- Content will be loaded dynamically from API -->
+                <div class="text-center py-5">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-3">Loading your itinerary...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    {% include 'footer.html' %}
+
+    <!-- JS: Bootstrap → Wishlist → Modal → Trip Itinerary -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static',filename='js/api-client.js')}}"></script>
+    <script src="{{url_for('static',filename='js/wishlist.js')}}"></script>
+    <script src="{{url_for('static',filename='js/location-modal.js')}}?v=3"></script>
+    <script src="{{url_for('static',filename='js/trip-itinerary.js')}}?v=2"></script>
+
+</body>
+
+</html>

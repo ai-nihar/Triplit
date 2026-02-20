@@ -1,0 +1,279 @@
+/* ==========================================================================
+   PROFILE.CSS — Minimal, Modern Profile Page
+   ========================================================================== */
+
+/* --- Design Tokens (Navy-Blue Theme) --- */
+:root {
+    --profile-navy: #1E293B;
+    --profile-navy-light: #F0F2F5;
+    --profile-navy-shadow: rgba(30, 41, 59, 0.25);
+}
+
+/* --- Reset & Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.profile-body,
+body.light {
+    font-family: 'Inter', sans-serif;
+    color: #1E293B;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+/* --- Page Container --- */
+.profile-page {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+}
+
+/* ==========================================================================
+   1. TOP HEADER BAR
+   ========================================================================== */
+
+.profile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px 0 12px;
+}
+
+.topbar-back {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    color: #1E293B;
+    font-size: 18px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.topbar-back:hover {
+    background: #F1F5F9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    color: #1E293B;
+}
+
+.topbar-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1E293B;
+    letter-spacing: -0.3px;
+}
+
+/* ==========================================================================
+   2. AVATAR & GREETING
+   ========================================================================== */
+
+.profile-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 0 32px;
+}
+
+/* Avatar circle */
+.avatar-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.avatar-circle {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    font-weight: 800;
+    color: #FFFFFF;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 24px var(--profile-navy-shadow);
+}
+
+/* Edit badge */
+.avatar-edit-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #F4F6F8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.avatar-edit-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-edit-badge i {
+    font-size: 12px;
+    color: #64748B;
+}
+
+/* Greeting text */
+.greeting-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0F172A;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+}
+
+.greeting-email {
+    font-size: 14px;
+    color: #94A3B8;
+    font-weight: 400;
+}
+
+/* ==========================================================================
+   3. ACCOUNT DETAILS CARD
+   ========================================================================== */
+
+.details-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04),
+        0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.details-card__header {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+}
+
+/* --- Detail Row --- */
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+}
+
+.detail-row:not(:last-child) {
+    border-bottom: 1px solid #F1F5F9;
+}
+
+/* Left icon */
+.detail-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--profile-navy-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.detail-icon i {
+    font-size: 16px;
+    color: var(--profile-navy);
+}
+
+/* Text block */
+.detail-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.detail-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+
+.detail-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E293B;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.detail-value.masked {
+    letter-spacing: 2px;
+    font-size: 16px;
+}
+
+/* Change password link */
+.detail-action {
+    flex-shrink: 0;
+}
+
+.btn-change-password {
+    background: none;
+    border: none;
+    color: var(--profile-navy);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.btn-change-password:hover {
+    background: var(--profile-navy-light);
+    color: #0F172A;
+}
+
+/* ==========================================================================
+   4. RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .profile-page {
+        padding: 0 16px 40px;
+    }
+
+    .avatar-circle {
+        width: 84px;
+        height: 84px;
+        font-size: 30px;
+    }
+
+    .greeting-name {
+        font-size: 21px;
+    }
+
+    .details-card {
+        padding: 20px 18px;
+    }
+}

@@ -1,0 +1,235 @@
+/* --- RESET & BASIC SETUP --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+    
+    margin: 0;
+
+    background:
+        radial-gradient(
+        circle at top left,
+        #CFF3E8 0%,
+        transparent 50%
+        ),
+        radial-gradient(
+        circle at bottom right,
+        #BEEDE6 0%,
+        transparent 50%
+        ),
+        radial-gradient(
+        circle at top right,
+        #FFE8B6 0%,
+        transparent 55%
+        ),
+        radial-gradient(
+        circle at bottom left,
+        #FFD9A0 0%,
+        transparent 55%
+        );
+
+    background-color: #F7F7F7;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* --- MAIN CARD CONTAINER --- */
+.login-card {
+    background-color: #F7F7F7;
+    width: 900px;
+    height: 550px;
+    border-radius: 40px; /* Highly rounded corners */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05); /* Soft, diffuse shadow */
+    display: flex;
+    overflow: hidden; /* Keeps child elements inside the rounded corners */
+    padding: 20px;
+}
+
+/* --- LEFT SIDE: FORM --- */
+.form-section {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    color: #6d6a63; /* Muted brownish-grey */
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    color: #8d8a83;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    margin-left: 10px; /* Slight offset to align with rounded input */
+}
+
+input {
+    width: 100%;
+    padding: 15px 25px;
+    border-radius: 50px; /* Pill shape */
+    background-color: #cbf2e6; /* The specific Mint Green from the image */
+    color: #4a4a4a;
+    font-size: 1rem;
+    outline: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(203, 242, 230, 0.5);
+}
+
+/* --- BUTTON STYLING --- */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    background: #e89b56; /* Terracotta Orange */
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 5px 15px rgba(232, 155, 86, 0.4); /* Colored shadow glow */
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #d68a45;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(232, 155, 86, 0.6);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.signup-link a {
+    color: #e89b56;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- RIGHT SIDE: ILLUSTRATION --- */
+.image-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* Optional: Add a subtle border or separate background if desired, 
+        but the reference has it seamless */
+}
+
+.illustration {
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    object-fit: contain;
+    /* BLENDING TRICK: If your jpeg has a white background, 
+        this helps it blend into the cream card background */
+    mix-blend-mode: multiply; 
+}
+
+.brand-text {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.brand-text h2 {
+    color: #1a4d45; /* Dark teal for contrast */
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.brand-text p {
+    color: #666;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+/* ======== Search Box ========== */
+.search-box {
+    max-width: 10px;
+    background: #fff;
+    border-radius: 50px;
+    display: flex;
+    padding: 5px 0px;
+}
+
+.search-box input {
+    border: none; outline: none; flex: 1; padding-left: 20px;
+}
+
+.search-box button {
+    background: #e52d27; 
+    color: white; 
+    border: none;
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%;
+}
+
+
+/* ========== FULL IMAGE RESPONSIVE FIX ========== */
+@media (max-width: 850px) {
+    .login-card {
+        flex-direction: column-reverse; /* Puts image section on top */
+        width: 95%;
+        height: auto;       /* Critical: Allows card to grow to fit the image */
+        min-height: auto;   /* Removes any minimum height restrictions */
+        padding: 10px;
+        overflow: visible;  /* Ensures no shadows or parts of the image are clipped */
+    }
+
+    .image-section {
+        width: 100%;
+        padding: 20px 20px 10px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: none; /* Prevents the section from shrinking */
+    }
+
+    .illustration {
+        width: 100%;        /* Image spans the width of its container */
+        max-width: 320px;   /* Limits size so it doesn't get too huge */
+        height: auto;       /* Maintains perfect aspect ratio */
+        object-fit: contain; /* THE FIX: Keeps the whole image visible without cropping */
+        display: block;
+    }
+
+    .form-section {
+        width: 100%;
+        padding: 10px 30px 40px 30px;
+        flex: none;
+    }
+
+    .brand-text h2 {
+        font-size: 1.8rem;
+        margin-top: 5px;
+    }
+}

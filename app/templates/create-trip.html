@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Trip - Triplit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Bootstrap (for shared navbar/footer consistency) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts (match other pages) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="{{url_for('static',filename='js/api-client.js')}}"></script>
+    <script src="{{url_for('static',filename='js/wishlist.js')}}"></script>
+
+
+    <!-- Global styles (includes footer styles) -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/create-trip.css')}}">
+</head>
+
+<body>
+
+    {% include 'navbar.html' %}
+
+    <!-- Full-screen overlay for Auto planning mode -->
+    <div class="auto-overlay" id="auto-overlay">
+        <div class="overlay-spinner"></div>
+        <h2>🤖 AI is planning your trip...</h2>
+        <p>Selecting the best locations and finalizing your itinerary. Hang tight!</p>
+    </div>
+
+    <div class="container">
+            <div class="header danger">
+
+                <h1><i class="fas fa-Plane-alt"></i> Create Your Trip</h1>
+
+                <p>Plan your perfect journey in 8 simple steps</p>
+
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="step-indicator" id="step-indicator">Step 1 of 8</div>
+                </div>
+            </div>
+
+            <div class="form form-container" method="post" action="/trip">
+                <!-- Step 1: Trip Name -->
+                <div class="step active" id="step-1">
+                    <h2>✏️ Name Your Trip</h2>
+                    <p>Give your adventure a memorable name that inspires you</p>
+
+                    <div class="form-group">
+                        <label for="trip-name">Trip Name</label>
+                        <input type="text" id="trip-name" name="trip_name"
+                            placeholder="e.g., European Adventure 2025, Bali Honeymoon, Japan Cherry Blossom Tour"
+                            maxlength="50">
+                        <small class="hint">You can change this later</small>
+                    </div>
+                </div>
+
+                <!-- Step 2: Start & End Regions -->
+                <div class="step" id="step-2">
+                    <h2>📍 Where Does Your Trip Begin & End?</h2>
+                    <p>Tell us your starting point and if you'll end somewhere different</p>
+
+                    <div class="form-group">
+                        <label for="start-region">Starting Region/City *</label>
+                        <input type="text" id="start-region" name="start_region" placeholder="e.g., Tokyo, Japan"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="checkbox-label"
+                            style="justify-content: flex-start; padding: 0; background: none; border: none;">
+                            <input type="checkbox" id="same-end-region" style="margin-right: 10px;">
+                            <span>Trip ends in the same region</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="end-region-group">
+                        <label for="end-region">Ending Region/City (Optional)</label>
+                        <input type="text" id="end-region" placeholder="e.g., Osaka, Japan">
+                        <small class="hint">If you plan to finish your trip in a different location</small>
+                    </div>
+                </div>
+
+                <!-- Step 3: Travelling Regions -->
+                <div class="step" id="step-3">
+                    <h2>🌍 Where Do You Want to Explore?</h2>
+                    <p>Add up to 3 regions for this search. You can add more regions later.</p>
+
+                    <div class="form-group">
+                        <label for="region-input">Add a region to explore</label>
+                        <div class="flex-row">
+                            <input type="text" id="region-input" placeholder="e.g., Kyoto, Hakone, Nara">
+                            <button type="button" class="btn btn-next" id="add-region-btn"
+                                style="padding: 0 20px;">Add</button>
+                        </div>
+                        <small class="hint">These are the main areas you'll be exploring within your trip</small>
+                    </div>
+
+                    <div class="region-tags" id="region-tags"></div>
+
+                    <div class="counter" id="region-counter">0/3 regions added</div>
+                </div>
+
+                <!-- Step 4: Trip Priority -->
+                <div class="step" id="step-4">
+                    <h2>🎯 What's Your Trip Focus?</h2>
+                    <p>Choose how you want to discover places</p>
+
+                    <div class="options-grid">
+                        <div class="option-card" id="specific-card">
+                            <div class="icon">🎯</div>
+                            <h3>Specific Interests</h3>
+                            <p>Choose the types of places you want to prioritize</p>
+                        </div>
+
+                        <div class="option-card selected" id="diversity-card">
+                            <div class="icon">🌍</div>
+                            <h3>Diversity Mode</h3>
+                            <p>Explore the best of each region with maximum variety</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="interests-group" style="display: none; margin-top: 25px;">
+                        <label>Select Your Interests (Choose up to 5)</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="historical"> Historical Sites
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="museums"> Museums & Galleries
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="nature"> Nature & Parks
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="food"> Food & Dining
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="shopping"> Shopping
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="religious"> Religious Sites
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="viewpoints"> Scenic Viewpoints
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="entertainment"> Entertainment
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="local"> Local Neighborhoods
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="beaches"> Beaches & Waterfronts
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="adventure"> Adventure Activities
+                            </div>
+                            <div class="checkbox-label">
+                                <input type="checkbox" value="wellness"> Wellness & Spas
+                            </div>
+                        </div>
+                        <small class="hint">These are high-priority preferences, not strict filters</small>
+                    </div>
+
+                    <div class="mode-indicator" id="selected-mode"
+                        style="margin-top: 20px; padding: 15px; background: #F0F9FF; border-radius: 10px; border-left: 4px solid #0EA5E9;">
+                        <strong>Selected:</strong> <span id="mode-text">Diversity Mode - Explore the best variety</span>
+                    </div>
+                </div>
+
+                <!-- Step 5: Travel Pace -->
+                <div class="step" id="step-5">
+                    <h2>🐌 What's Your Travel Pace?</h2>
+                    <p>This determines how many places you'll visit each day</p>
+
+                    <div class="options-grid">
+                        <div class="option-card" data-pace="relaxed" onclick="selectPaceCard(this)">
+                            <div class="icon">🐌</div>
+                            <h3>Relaxed</h3>
+                            <p>1-2 places per day</p>
+                            <small style="display: block; margin-top: 8px; color: #6B7280;">Plenty of downtime &
+                                flexible schedule</small>
+                        </div>
+
+                        <div class="option-card selected" data-pace="balanced" onclick="selectPaceCard(this)">
+                            <div class="icon">🚶</div>
+                            <h3>Balanced</h3>
+                            <p>3-4 places per day</p>
+                            <small style="display: block; margin-top: 8px; color: #6B7280;">Mix of activities &
+                                relaxation</small>
+                        </div>
+
+                        <div class="option-card" data-pace="packed" onclick="selectPaceCard(this)">
+                            <div class="icon">⚡</div>
+                            <h3>Packed</h3>
+                            <p>5+ places per day</p>
+                            <small style="display: block; margin-top: 8px; color: #6B7280;">Maximum sightseeing for
+                                power travelers</small>
+                        </div>
+                    </div>
+
+                    <div class="pace-details"
+                        style="margin-top: 25px; padding: 15px; background: #F0FDF4; border-radius: 10px; border-left: 4px solid #10B981;">
+                        <p>Selected: <strong id="selected-pace">Balanced</strong></p>
+                        <p>Estimated daily places: <span id="daily-places">3-4</span></p>
+                    </div>
+                </div>
+
+                <!-- Step 6: Companion Type -->
+                <div class="step" id="step-6">
+                    <h2>👥 Who's Traveling?</h2>
+                    <p>This helps us suggest appropriate places for your group</p>
+
+                    <div class="options-grid">
+                        <div class="option-card" data-companion="solo" onclick="selectCompanionCard(this)">
+                            <div class="icon">🧍</div>
+                            <h3>Solo Traveler</h3>
+                        </div>
+
+                        <div class="option-card selected" data-companion="couple" onclick="selectCompanionCard(this)">
+                            <div class="icon">👫</div>
+                            <h3>Couple</h3>
+                        </div>
+
+                        <div class="option-card" data-companion="friends" onclick="selectCompanionCard(this)">
+                            <div class="icon">👥</div>
+                            <h3>Friends</h3>
+                        </div>
+
+                        <div class="option-card" data-companion="family" onclick="selectCompanionCard(this)">
+                            <div class="icon">👨‍👩‍👧‍👦</div>
+                            <h3>Family</h3>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <!-- Step 7: Season -->
+                <div class="step" id="step-7">
+                    <h2>🌤️ When Are You Traveling?</h2>
+                    <p>This affects seasonal attractions and weather considerations</p>
+
+                    <div class="options-grid">
+                        <div class="option-card selected" data-season="anytime" onclick="selectSeasonCard(this)">
+                            <div class="icon">📅</div>
+                            <h3>Anytime</h3>
+                            <p>Season doesn't matter</p>
+                        </div>
+
+                        <div class="option-card" data-season="summer" onclick="selectSeasonCard(this)">
+                            <div class="icon">☀️</div>
+                            <h3>Summer</h3>
+                            <p>June - August</p>
+                        </div>
+
+                        <div class="option-card" data-season="winter" onclick="selectSeasonCard(this)">
+                            <div class="icon">❄️</div>
+                            <h3>Winter</h3>
+                            <p>December - February</p>
+                        </div>
+
+                        <div class="option-card" data-season="monsoon" onclick="selectSeasonCard(this)">
+                            <div class="icon">🌧️</div>
+                            <h3>Monsoon/Rainy</h3>
+                            <p>Region dependent</p>
+                        </div>
+                    </div>
+
+                    <div class="season-details"
+                        style="margin-top: 25px; padding: 15px; background: #FFFBEB; border-radius: 10px; border-left: 4px solid #F59E0B;">
+                        <p>Selected: <strong id="selected-season">Anytime</strong></p>
+                        <small class="hint">We'll consider seasonal factors for your destination</small>
+                    </div>
+                </div>
+
+                <!-- Step 8: Planning Mode -->
+                <div class="step" id="step-8">
+                    <h2>📋 How Do You Want to Plan?</h2>
+                    <p>Choose your planning style</p>
+
+                    <div class="options-grid">
+                        <div class="option-card" id="auto-card" data-mode="auto" onclick="selectPlanningMode('auto')">
+                            <div class="icon">🚀</div>
+                            <h3>Auto Plan</h3>
+                            <p>Get a complete day-wise itinerary generated for you</p>
+                            <small style="display: block; margin-top: 8px; color: #6B7280;">Perfect for quick planning
+                                with optimized routes</small>
+                        </div>
+
+                        <div class="option-card selected" id="manual-card" data-mode="manual"
+                            onclick="selectPlanningMode('manual')">
+                            <div class="icon">🎨</div>
+                            <h3>Manual Build</h3>
+                            <p>Choose places freely and build your own itinerary</p>
+                            <small style="display: block; margin-top: 8px; color: #6B7280;">Full control & flexibility
+                                to build at your own pace</small>
+                        </div>
+                    </div>
+
+                    <!-- Hidden field to track planning mode -->
+                    <input type="hidden" id="planning-mode" name="planning_mode" value="manual">
+
+                    <div class="form-group hidden" id="auto-details">
+                        <label for="trip-days">Trip Duration (Days) *</label>
+                        <input type="number" id="trip-days" min="1" max="30" placeholder="e.g., 7"
+                            oninput="tripData.tripDays = parseInt(this.value) || 0; validateStep8();">
+                        <small class="hint">How many days will you be traveling?</small>
+
+                        <label for="min-days-per-region" style="margin-top: 14px;">Minimum Days Per Region *</label>
+                        <input type="number" id="min-days-per-region" min="1" max="10" placeholder="e.g., 2"
+                            oninput="tripData.minDaysPerRegion = parseInt(this.value) || 0; validateStep8();">
+                        <small class="hint">Barrier for practicality. Example: 2 means you need 2 days for each region you add.</small>
+
+                        <div id="auto-days-region-warning" class="mode-indicator" style="display:none; margin-top: 14px; padding: 12px; background: #FFF7ED; border-radius: 10px; border-left: 4px solid #F97316;">
+                            <strong>Heads up:</strong> <span id="auto-days-region-warning-text"></span>
+                        </div>
+                    </div>
+
+                    <div class="manual-details" id="manual-details"
+                        style="margin-top: 25px; padding: 15px; background: #F0F9FF; border-radius: 10px; border-left: 4px solid #0EA5E9;">
+                        <p><strong>✅ No need to specify days upfront</strong></p>
+                        <p>We'll suggest plenty of places and estimate trip duration based on your selections. You can
+                            always adjust later.</p>
+                    </div>
+                </div>
+
+                <!-- Loading Screen (Manual mode) -->
+                <div class="loading" id="loading-screen">
+                    <div class="spinner"></div>
+                    <h2>Creating Your Trip...</h2>
+                    <p>We're generating personalized suggestions for your journey.</p>
+                    <p>This usually takes 10-15 seconds.</p>
+                </div>
+
+                <!-- Loading Overlay (Auto mode) -->
+                <!-- Auto mode uses the full-screen #auto-overlay above -->
+
+                <!-- Action Buttons -->
+                <div class="action-buttons" id="action-buttons">
+                    <button type="button" class="btn btn-back" id="btn-back">← Back</button>
+                    <button type="button" class="btn btn-next" id="btn-next" data-role="generate-trip-btn" disabled>Next
+                        →</button>
+                </div>
+            </div>
+        </div>
+
+    {% include 'footer.html' %}
+
+    <script>
+        // Trip data object to store all user inputs
+        const tripData = {
+            tripName: '',
+            startRegion: '',
+            endRegion: '',
+            travellingRegions: [],
+            tripPriority: {
+                mode: 'diversity',
+                interests: []
+            },
+            pace: 'balanced',
+            companion: 'couple',
+            season: 'anytime',
+            planningMode: 'manual',
+            tripDays: 0,
+            minDaysPerRegion: 2
+        };
+
+        // Pace settings
+        const paceSettings = {
+            relaxed: { min: 1, max: 2, daily: 1.5 },
+            balanced: { min: 3, max: 4, daily: 3.5 },
+            packed: { min: 5, max: 6, daily: 5.5 }
+        };
+
+        // Current step tracking
+        let currentStep = 1;
+        const totalSteps = 8;
+
+        // DOM elements
+        const progressFill = document.getElementById('progress-fill');
+        const stepIndicator = document.getElementById('step-indicator');
+        const btnBack = document.getElementById('btn-back');
+        const btnNext = document.getElementById('btn-next');
+        const loadingScreen = document.getElementById('loading-screen');
+        const actionButtons = document.getElementById('action-buttons');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function () {
+            updateStep();
+            setupEventListeners();
+
+            // Keep default value visible for auto-mode constraint
+            const minInp = document.getElementById('min-days-per-region');
+            if (minInp && !minInp.value) {
+                minInp.value = String(tripData.minDaysPerRegion || 2);
+            }
+        });
+
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Navigation buttons
+            btnBack.addEventListener('click', goToPreviousStep);
+            btnNext.addEventListener('click', goToNextStep);
+
+            // Trip name validation
+            document.getElementById('trip-name').addEventListener('input', function () {
+                tripData.tripName = this.value.trim();
+                validateStep1();
+            });
+
+            // Region toggle
+            document.getElementById('same-end-region').addEventListener('change', function () {
+                document.getElementById('end-region-group').classList.toggle('hidden', this.checked);
+            });
+
+            // Start region validation
+            document.getElementById('start-region').addEventListener('input', function () {
+                tripData.startRegion = this.value.trim();
+                validateStep2();
+            });
+
+            // End region
+            document.getElementById('end-region').addEventListener('input', function () {
+                tripData.endRegion = this.value.trim();
+            });
+
+            // Add region button
+            document.getElementById('add-region-btn').addEventListener('click', addRegion);
+            document.getElementById('region-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addRegion();
+                }
+            });
+
+            // Trip priority cards
+            document.getElementById('specific-card').addEventListener('click', function () {
+                selectTripPriority('specific');
+            });
+
+            document.getElementById('diversity-card').addEventListener('click', function () {
+                selectTripPriority('diversity');
+            });
+
+            // Interest checkboxes
+            document.querySelectorAll('#interests-group input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedInterests);
+            });
+
+            // Pace cards
+            document.querySelectorAll('#step-5 .option-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    selectOptionCard(this, 'pace');
+                    tripData.pace = this.dataset.pace;
+                    updatePaceDetails();
+                    validateCurrentStep();
+                });
+            });
+
+            // Companion cards
+            document.querySelectorAll('#step-6 .option-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    selectOptionCard(this, 'companion');
+                    tripData.companion = this.dataset.companion;
+                    validateCurrentStep();
+                });
+            });
+
+
+
+            // Season cards
+            document.querySelectorAll('#step-7 .option-card').forEach(card => {
+                card.addEventListener('click', function () {
+                    selectOptionCard(this, 'season');
+                    tripData.season = this.dataset.season;
+                    document.getElementById('selected-season').textContent =
+                        this.dataset.season.charAt(0).toUpperCase() + this.dataset.season.slice(1);
+                    validateCurrentStep();
+                });
+            });
+
+            // Planning mode cards
+            document.getElementById('auto-card').addEventListener('click', function () {
+                selectPlanningMode('auto');
+            });
+
+            document.getElementById('manual-card').addEventListener('click', function () {
+                selectPlanningMode('manual');
+            });
+
+            // Trip days for auto mode
+            document.getElementById('trip-days').addEventListener('input', function () {
+                tripData.tripDays = parseInt(this.value) || 0;
+                validateStep8();
+            });
+        }
+
+        // Navigation functions
+        function goToPreviousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStep();
+            }
+        }
+
+        function goToNextStep() {
+            if (currentStep < totalSteps) {
+                // Validate current step before proceeding
+                if (validateCurrentStep()) {
+                    currentStep++;
+                    updateStep();
+                }
+            } else {
+                // Last step - generate trip
+                if (validateCurrentStep()) {
+                    generateTrip();
+                }
+            }
+        }
+
+        function updateStep() {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+
+            // Show current step
+            document.getElementById(`step-${currentStep}`).classList.add('active');
+
+            // Update progress bar
+            const progressPercentage = (currentStep / totalSteps) * 100;
+            progressFill.style.width = `${progressPercentage}%`;
+
+            // Update step indicator
+            stepIndicator.textContent = `Step ${currentStep} of ${totalSteps}`;
+
+            // Update navigation buttons
+            btnBack.style.display = currentStep === 1 ? 'none' : 'block';
+
+            if (currentStep === totalSteps) {
+                btnNext.textContent = 'Generate Trip';
+                btnNext.classList.remove('btn-next');
+                btnNext.classList.add('btn-generate');
+            } else {
+                btnNext.textContent = 'Next →';
+                btnNext.classList.remove('btn-generate');
+                btnNext.classList.add('btn-next');
+            }
+
+            // Validate the new step
+            validateCurrentStep();
+        }
+
+        // Validation functions for each step
+        function validateCurrentStep() {
+            switch (currentStep) {
+                case 1: return validateStep1();
+                case 2: return validateStep2();
+                case 3: return validateStep3();
+                case 4: return validateStep4();
+                case 5: return validateStep5();
+                case 6: return validateStep6();
+                case 7: return validateStep7();
+                case 8: return validateStep8();
+                default: return false;
+            }
+        }
+
+        function validateStep1() {
+            const isValid = tripData.tripName.length >= 3;
+            btnNext.disabled = !isValid;
+            return isValid;
+        }
+
+        function validateStep2() {
+            const isValid = tripData.startRegion.length >= 2;
+            btnNext.disabled = !isValid;
+            return isValid;
+        }
+
+        function validateStep3() {
+            const isValid = tripData.travellingRegions.length >= 1;
+            btnNext.disabled = !isValid;
+            return isValid;
+        }
+
+        function validateStep4() {
+            // Always valid since diversity mode is default
+            btnNext.disabled = false;
+            return true;
+        }
+
+        function validateStep5() {
+            // Always valid since balanced is default
+            btnNext.disabled = false;
+            return true;
+        }
+
+        function validateStep6() {
+            // Always valid since couple is default
+            btnNext.disabled = false;
+            return true;
+        }
+
+        function validateStep7() {
+            // Always valid since anytime is default
+            btnNext.disabled = false;
+            return true;
+        }
+
+        function validateStep8() {
+            if (tripData.planningMode === 'auto') {
+                const warningBox = document.getElementById('auto-days-region-warning');
+                const warningText = document.getElementById('auto-days-region-warning-text');
+
+                const daysOk = tripData.tripDays >= 1 && tripData.tripDays <= 30;
+                const minOk = tripData.minDaysPerRegion >= 1 && tripData.minDaysPerRegion <= 10;
+
+                const regionsCount = (tripData.travellingRegions || []).length;
+                const maxRegions = (daysOk && minOk) ? Math.floor(tripData.tripDays / tripData.minDaysPerRegion) : 0;
+
+                let regionsOk = true;
+                if (regionsCount > 0) {
+                    // If maxRegions is 0, it's mathematically impossible to even cover 1 region.
+                    if (maxRegions < 1) {
+                        regionsOk = false;
+                    } else if (regionsCount > maxRegions) {
+                        regionsOk = false;
+                    }
+                }
+
+                if (warningBox && warningText) {
+                    if (regionsCount > 0 && maxRegions >= 0) {
+                        warningBox.style.display = regionsOk ? 'none' : 'block';
+                        if (!regionsOk) {
+                            warningText.textContent = `With ${tripData.tripDays} days and ${tripData.minDaysPerRegion} days/region, you can cover at most ${maxRegions} region(s). Reduce regions or increase days.`;
+                        }
+                    } else {
+                        warningBox.style.display = 'none';
+                    }
+                }
+
+                const isValid = daysOk && minOk && regionsOk;
+                btnNext.disabled = !isValid;
+                return isValid;
+            } else {
+                // Manual mode doesn't need validation
+                btnNext.disabled = false;
+                return true;
+            }
+        }
+
+        // Region management
+        function addRegion() {
+            const input = document.getElementById('region-input');
+            const region = input.value.trim();
+
+            if (!region) return;
+
+            // Check if already added
+            if (tripData.travellingRegions.includes(region)) {
+                alert('This region is already added');
+                return;
+            }
+
+            // Check limit
+            if (tripData.travellingRegions.length >= 3) {
+                alert('Maximum 3 regions allowed per search. You can add more later.');
+                return;
+            }
+
+            // Add to data
+            tripData.travellingRegions.push(region);
+
+            // Create tag
+            const tag = document.createElement('div');
+            tag.className = 'region-tag';
+            tag.innerHTML = `
+                ${region}
+                <button class="remove" data-region="${region}">×</button>
+            `;
+
+            document.getElementById('region-tags').appendChild(tag);
+
+            // Add remove event
+            tag.querySelector('.remove').addEventListener('click', function () {
+                const regionToRemove = this.dataset.region;
+                tripData.travellingRegions = tripData.travellingRegions.filter(r => r !== regionToRemove);
+                tag.remove();
+                updateRegionCounter();
+                validateStep3();
+            });
+
+            // Clear input and update counter
+            input.value = '';
+            updateRegionCounter();
+            validateStep3();
+        }
+
+        function updateRegionCounter() {
+            const count = tripData.travellingRegions.length;
+            document.getElementById('region-counter').textContent = `${count}/3 regions added`;
+        }
+
+        // Trip priority selection
+        function selectTripPriority(mode) {
+            tripData.tripPriority.mode = mode;
+
+            // Update card selection
+            document.getElementById('specific-card').classList.toggle('selected', mode === 'specific');
+            document.getElementById('diversity-card').classList.toggle('selected', mode === 'diversity');
+
+            // Show/hide interests
+            document.getElementById('interests-group').style.display = mode === 'specific' ? 'block' : 'none';
+
+            // Update mode text
+            const modeText = document.getElementById('mode-text');
+            if (mode === 'diversity') {
+                modeText.textContent = 'Diversity Mode - Explore the best variety';
+            } else {
+                modeText.textContent = 'Specific Interests - Focus on selected categories';
+            }
+
+            validateCurrentStep();
+        }
+
+        function updateSelectedInterests() {
+            const checkboxes = document.querySelectorAll('#interests-group input[type="checkbox"]:checked');
+            tripData.tripPriority.interests = Array.from(checkboxes).map(cb => cb.value);
+
+            // Limit to 5 interests
+            if (tripData.tripPriority.interests.length > 5) {
+                alert('Maximum 5 interests allowed');
+                this.checked = false;
+                updateSelectedInterests();
+            }
+
+            // Update checkbox labels
+            document.querySelectorAll('#interests-group .checkbox-label').forEach(label => {
+                const checkbox = label.querySelector('input');
+                label.classList.toggle('selected', checkbox.checked);
+            });
+        }
+
+        // Helper function for option card selection
+        function selectOptionCard(card, type) {
+            // Remove selected class from all cards of this type
+            card.parentElement.querySelectorAll('.option-card').forEach(c => {
+                c.classList.remove('selected');
+            });
+
+            // Add selected class to clicked card
+            card.classList.add('selected');
+        }
+
+        // ── Inline click handlers for each card group ──
+        function selectPaceCard(card) {
+            selectOptionCard(card, 'pace');
+            tripData.pace = card.dataset.pace;
+            updatePaceDetails();
+            validateCurrentStep();
+        }
+
+        function selectCompanionCard(card) {
+            selectOptionCard(card, 'companion');
+            tripData.companion = card.dataset.companion;
+            validateCurrentStep();
+        }
+
+        function selectSeasonCard(card) {
+            selectOptionCard(card, 'season');
+            tripData.season = card.dataset.season;
+            document.getElementById('selected-season').textContent =
+                card.dataset.season.charAt(0).toUpperCase() + card.dataset.season.slice(1);
+            validateCurrentStep();
+        }
+
+        function updatePaceDetails() {
+            const pace = tripData.pace;
+            const settings = paceSettings[pace];
+
+            document.getElementById('selected-pace').textContent =
+                pace.charAt(0).toUpperCase() + pace.slice(1);
+            document.getElementById('daily-places').textContent =
+                `${settings.min}-${settings.max}`;
+        }
+
+        // Planning mode selection
+        function selectPlanningMode(mode) {
+            tripData.planningMode = mode;
+
+            // Sync hidden input
+            const hiddenInput = document.getElementById('planning-mode');
+            if (hiddenInput) hiddenInput.value = mode;
+
+            // Update card selection
+            document.getElementById('auto-card').classList.toggle('selected', mode === 'auto');
+            document.getElementById('manual-card').classList.toggle('selected', mode === 'manual');
+
+            // Show/hide details
+            document.getElementById('auto-details').classList.toggle('hidden', mode !== 'auto');
+            document.getElementById('manual-details').classList.toggle('hidden', mode !== 'manual');
+
+            // Default barrier for practicality when user switches to auto
+            if (mode === 'auto' && (!tripData.minDaysPerRegion || tripData.minDaysPerRegion < 1)) {
+                tripData.minDaysPerRegion = 2;
+                const inp = document.getElementById('min-days-per-region');
+                if (inp) inp.value = '2';
+            }
+
+            // Update button text when on final step
+            if (currentStep === totalSteps) {
+                btnNext.textContent = mode === 'auto' ? '✨ Generate Trip' : 'Generate Trip';
+            }
+
+            validateStep8();
+        }
+
+        // Generate trip (send data to Flask backend)
+        function generateTrip() {
+            // Disable the button immediately to prevent double-clicks
+            btnNext.disabled = true;
+            const originalBtnText = btnNext.textContent;
+
+            // ── MANUAL mode: create draft, redirect to builder ──
+            if (tripData.planningMode === 'manual') {
+                btnNext.textContent = 'Creating Trip...';
+                loadingScreen.classList.add('active');
+                actionButtons.style.display = 'none';
+
+                fetch('/api/submit-trip', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(tripData)
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const tripId = data.trip_id || (data.session_data && data.session_data.trip_id);
+                            console.log('[Trip] Manual mode → redirecting to plan-trip, trip_id:', tripId);
+                            window.location.href = tripId ? `/draft_trip/${tripId}` : '/dashboard';
+                        } else {
+                            alert('Error creating trip: ' + (data.message || 'Unknown error'));
+                            loadingScreen.classList.remove('active');
+                            actionButtons.style.display = 'flex';
+                            btnNext.disabled = false;
+                            btnNext.textContent = originalBtnText;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('[Trip] Manual mode error:', error);
+                        alert('Failed to create trip. Please try again.');
+                        loadingScreen.classList.remove('active');
+                        actionButtons.style.display = 'flex';
+                        btnNext.disabled = false;
+                        btnNext.textContent = originalBtnText;
+                    });
+                return;
+            }
+
+            // ── AUTO mode: create + auto-select locations + finalize, redirect to itinerary ──
+            btnNext.textContent = '✨ Generating AI Trip...';
+
+            // Show loading overlay (auto or fallback to generic)
+            const overlay = document.getElementById('auto-overlay') || loadingScreen;
+            overlay.classList.add('active');
+            actionButtons.style.display = 'none';
+
+            console.log('[Trip] Auto mode → sending data:', JSON.stringify(tripData));
+
+            fetch('/api/trips/auto-generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(tripData)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // For auto mode: redirect to dashboard (bypass manual selection)
+                        // For manual mode: would redirect to manual selection page
+                        const redirectUrl = data.redirect || '/dashboard';
+                        console.log('[Trip] Auto mode → redirecting to:', redirectUrl);
+                        window.location.href = redirectUrl;
+                    } else {
+                        overlay.classList.remove('active');
+                        actionButtons.style.display = 'flex';
+                        btnNext.disabled = false;
+                        btnNext.textContent = originalBtnText;
+                        alert('Error: ' + (data.message || 'Auto-generation failed'));
+                    }
+                })
+                .catch(error => {
+                    console.error('[Trip] Auto mode error:', error);
+                    overlay.classList.remove('active');
+                    actionButtons.style.display = 'flex';
+                    btnNext.disabled = false;
+                    btnNext.textContent = originalBtnText;
+                    alert('Failed to auto-generate trip. Please try again.');
+                });
+        }
+    </script>
+
+
+
+</body>
+
+<!-- Bootstrap JS (navbar collapse) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</html>

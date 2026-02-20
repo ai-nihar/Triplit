@@ -1,0 +1,555 @@
+/* ===================================================================
+   Dashboard CSS — Premium Light Theme
+   Matches Home/Explore page gradient background
+   =================================================================== */
+
+/* ===== CSS Design Tokens ===== */
+:root {
+    --dash-text-primary: #0F172A;
+    --dash-text-secondary: #475569;
+    --dash-text-tertiary: #94A3B8;
+    --dash-text-muted: #64748B;
+    --dash-border: #E2E8F0;
+    --dash-blue: #3b82f6;
+    --dash-blue-hover: #2563EB;
+    --dash-blue-light: #EFF6FF;
+    --dash-green: #16A34A;
+    --dash-green-bg: #DCFCE7;
+    --dash-card-radius: 16px;
+    --dash-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --dash-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+    --dash-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== HERO SECTION ===== */
+.trips-hero {
+    background-color: #FFFFFF;
+    color: var(--dash-text-primary);
+    border-radius: 30px;
+    padding: 40px 0;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.trips-hero h1 {
+    color: var(--dash-text-primary);
+    font-family: 'Inter', 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+}
+
+.trips-subtitle {
+    color: var(--dash-text-muted);
+    font-size: 0.95rem;
+}
+
+/* Hero button: "Create Trip" dark navy pill */
+.btn-create-trip {
+    background: #1E293B !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-create-trip:hover {
+    transform: translateY(-2px);
+    background: #334155 !important;
+    box-shadow: 0 6px 20px rgba(30, 41, 59, 0.3) !important;
+}
+
+/* ===== COLUMNS LAYOUT ===== */
+.trips-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+    .trips-columns {
+        grid-template-columns: 1fr;
+        max-width: 640px;
+    }
+}
+
+/* ===== COLUMN PANEL ===== */
+.trips-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: dashFadeInUp 0.5s ease forwards;
+}
+
+.trips-column:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+@keyframes dashFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== COLUMN HEADERS ===== */
+.column-header-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.column-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.column-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--dash-text-primary);
+    letter-spacing: -0.3px;
+    margin: 0;
+}
+
+.column-subtitle {
+    font-size: 0.82rem;
+    color: var(--dash-text-tertiary);
+    margin: 0;
+}
+
+/* ===== BADGES ===== */
+.badge-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+.badge-draft {
+    background: #F1F5F9;
+    color: var(--dash-text-muted);
+    border: 1px solid var(--dash-border);
+}
+
+.badge-final {
+    background: var(--dash-green-bg);
+    color: var(--dash-green);
+    border: 1px solid rgba(22, 163, 74, 0.15);
+}
+
+/* ===== TRIP CARDS LIST ===== */
+.trip-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Loading placeholder */
+.loading-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 40px 20px;
+    color: var(--dash-text-tertiary);
+    font-size: 0.85rem;
+}
+
+/* ===== DRAFT TRIP CARD ===== */
+.draft-card {
+    background: #FFFFFF;
+    border-radius: var(--dash-card-radius);
+    border: 1px solid var(--dash-border);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--dash-shadow);
+    transition: var(--dash-transition);
+    cursor: default;
+}
+
+.draft-card:hover {
+    box-shadow: var(--dash-shadow-hover);
+    transform: translateY(-3px);
+    border-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Link wrapper for the whole card */
+.final-trip-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.final-trip-link:hover {
+    transform: translateY(-2px);
+}
+
+/* Arrow icon on final cards */
+.arrow-icon {
+    color: var(--dash-text-tertiary);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+/* ===== FINAL TRIP CARD ===== */
+.final-card {
+    background: #FFFFFF;
+    border-radius: var(--dash-card-radius);
+    border: 1px solid var(--dash-border);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--dash-shadow);
+    transition: var(--dash-transition);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.final-card:hover {
+    box-shadow: var(--dash-shadow-hover);
+    transform: translateY(-3px);
+    border-color: rgba(22, 163, 74, 0.25);
+    background: #FAFFFE;
+}
+
+.final-card:hover .arrow-icon {
+    color: var(--dash-text-secondary);
+    transform: translateX(3px);
+}
+
+/* ===== CARD INNER ELEMENTS ===== */
+.card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.card-icon.draft-icon {
+    background: var(--dash-blue-light);
+    color: var(--dash-blue);
+}
+
+.card-icon.final-icon {
+    background: var(--dash-green-bg);
+    color: var(--dash-green);
+}
+
+.card-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.card-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--dash-text-primary);
+    line-height: 1.3;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--dash-text-tertiary);
+}
+
+.card-meta i {
+    font-size: 0.7rem;
+}
+
+.card-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--dash-green);
+    font-weight: 500;
+}
+
+.card-status i {
+    font-size: 0.7rem;
+}
+
+.card-dates {
+    font-size: 0.72rem;
+    color: var(--dash-text-tertiary);
+    margin-top: 2px;
+}
+
+.card-action {
+    flex-shrink: 0;
+}
+
+/* Select button on draft cards */
+.btn-select {
+    padding: 8px 22px;
+    background: #1E293B;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-select:hover {
+    background: #334155;
+    box-shadow: 0 4px 12px rgba(30, 41, 59, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-select:active {
+    transform: translateY(0);
+}
+
+
+/* ===== CREATE NEW DRAFT BUTTON (Clean Dark Style) ===== */
+.btn-create-draft {
+    width: 100%;
+    padding: 16px;
+    background: #FFFFFF;
+    border: 2px dashed #1E293B;
+    border-radius: var(--dash-card-radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1E293B;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-create-draft:hover {
+    background: #1E293B;
+    color: #FFFFFF;
+    border-style: solid;
+    box-shadow: 0 8px 24px rgba(30, 41, 59, 0.15);
+    transform: translateY(-2px);
+}
+
+.btn-create-draft i {
+    font-size: 0.85rem;
+}
+
+/* ===== EMPTY STATE ===== */
+.trips-empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: #FFFFFF;
+    border-radius: var(--dash-card-radius);
+    border: 2px dashed var(--dash-border);
+}
+
+.trips-empty-state i {
+    font-size: 2.5rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.trips-empty-state h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--dash-text-primary);
+    margin-bottom: 6px;
+}
+
+.trips-empty-state p {
+    font-size: 0.85rem;
+    color: var(--dash-text-tertiary);
+    margin: 0;
+}
+
+/* ===== DELETE MODE & CHECKBOX STYLES ===== */
+
+/* Checkbox wrapper container */
+.checkbox-wrapper {
+    display: none;
+    align-items: center;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.checkbox-wrapper.visible {
+    display: flex;
+}
+
+/* Custom checkbox styling */
+.trip-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--dash-border);
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #FFFFFF;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.trip-checkbox:hover {
+    border-color: var(--dash-blue);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.trip-checkbox:checked {
+    background-color: var(--dash-blue);
+    border-color: var(--dash-blue);
+    box-shadow: 0 2px 6px rgba(59, 130, 246, 0.3);
+}
+
+.trip-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.trip-checkbox:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--dash-text-muted);
+}
+
+/* Draft card in delete mode */
+.draft-card.delete-mode-active {
+    padding-left: 12px;
+    border-color: rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.02);
+}
+
+.draft-card.delete-mode-active:has(.trip-checkbox:checked) {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+/* Hide the action button in delete mode */
+.draft-card.delete-mode-active .btn-select {
+    display: none;
+}
+
+/* Action bar for delete confirmation */
+.delete-mode-actions {
+    display: none;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(59, 130, 246, 0.05);
+    border-radius: var(--dash-card-radius);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    flex-wrap: wrap;
+}
+
+.delete-mode-actions.visible {
+    display: flex;
+}
+
+.delete-mode-actions .btn {
+    flex: 1;
+    min-width: 140px;
+}
+
+.delete-mode-actions .btn-danger {
+    background: #DC2626 !important;
+    border: none !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+.delete-mode-actions .btn-danger:hover {
+    background: #B91C1C !important;
+}
+
+/* ===== CARD ENTRANCE ANIMATION ===== */
+.trip-cards-list .draft-card,
+.trip-cards-list .final-card {
+    animation: dashFadeInUp 0.4s ease forwards;
+    opacity: 0;
+}
+
+.trip-cards-list> :nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.trip-cards-list> :nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.trip-cards-list> :nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.trip-cards-list> :nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.trip-cards-list> :nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.trip-cards-list> :nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .trips-hero .d-flex.gap-2 {
+        flex-direction: column;
+    }
+
+    .trips-hero h1 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Card exit animation */
+.draft-card.fade-out {
+    opacity: 0 !important;
+    transform: scale(0.9) !important;
+    transition: all 0.3s ease-out !important;
+}

@@ -1,0 +1,270 @@
+/* ==========================================================================
+   WISHLIST PAGE CSS
+   Themed to match the Explore page's light "Discover India" hero (box-glass)
+   ========================================================================== */
+
+/* Navigation & Layout */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.plan-btn {
+    background: #e89b56;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+/* ==========================================================================
+   HERO SECTION — Light theme, matching Explore page's .box-glass
+   White background, dark text, soft floating shadow
+   ========================================================================== */
+.explore-hero {
+    background-color: #FFFFFF;
+    color: #1E293B;
+    border-radius: 30px;
+    padding: 40px 0;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.explore-hero h1 {
+    color: #1E293B;
+    margin-top: 0;
+}
+
+.explore-hero p {
+    color: #64748b;
+}
+
+/* Force Home/Explore to the very top right */
+.explore-hero .row {
+    align-items: flex-start !important;
+}
+
+/* ==========================================================================
+   CHIPS — Styled for LIGHT hero background
+   ========================================================================== */
+.chip {
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    color: #1E293B;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.chip.active {
+    background: #1E293B;
+    color: #fff;
+    border-color: #1E293B;
+}
+
+/* Hover effect for 'Saved Items' */
+.chip.active:hover,
+.chip:first-child:hover {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+}
+
+/* Hover effect for 'Clear All' */
+.chip:last-child:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* ==========================================================================
+   BUTTONS — Home & Explore (Top Right) — For light background
+   White bg, thin dark border, dark text (matching Explore page's btn-outline-dark)
+   ========================================================================== */
+.explore-hero .btn-outline-dark {
+    background: #fff !important;
+    border: 1.5px solid #1E293B !important;
+    color: #1E293B !important;
+    transition: all 0.3s ease !important;
+}
+
+.explore-hero .btn-outline-dark:hover {
+    background: #1E293B !important;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+}
+
+/* ==========================================================================
+   CARD GRID
+   ========================================================================== */
+.explore-grid1 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* ==========================================================================
+   CARD STYLES (within wishlist context)
+   ========================================================================== */
+.category-card {
+    background: #fff;
+    border-radius: 40px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.card-img-wrapper {
+    position: relative;
+    height: 250px;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+/* --- HEART BUTTON LOGIC --- */
+.wishlist-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #888;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+/* When the button has the 'active' class */
+.wishlist-btn.active {
+    color: #ff5e5e !important;
+}
+
+/* --- Notification Dot --- */
+.badge-dot {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 12px;
+    height: 12px;
+    background: #ffc107;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    display: none;
+}
+
+/* ==========================================================================
+   EMPTY STATE — "Your wishlist is lonely!"
+   The CTA button is a standard block button, NOT absolutely positioned.
+   ========================================================================== */
+.empty-wishlist {
+    text-align: center;
+    width: 100%;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 40px;
+    border: 2px dashed #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-wishlist i {
+    font-size: 4rem;
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.empty-wishlist h2 {
+    color: #1E293B;
+    margin-bottom: 8px;
+}
+
+.empty-wishlist p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+/* CTA button inside the empty state — standard centered pill, NOT floating */
+.empty-wishlist .explore-cta-btn {
+    display: inline-block;
+    position: static;
+    background: #1E293B;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.empty-wishlist .explore-cta-btn:hover {
+    background: #334155;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 41, 59, 0.25);
+}
+
+/* Fallback: also fix .search-btn when used inside empty-wishlist */
+.empty-wishlist .search-btn {
+    position: static;
+    display: inline-block;
+    width: auto;
+    max-width: 280px;
+    padding: 14px 32px;
+    background: #1E293B;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    height: auto;
+    transition: all 0.3s ease;
+}
+
+.empty-wishlist .search-btn:hover {
+    background: #334155;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(30, 41, 59, 0.25);
+}
+
+/* Remove button for individual cards */
+.remove-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.3s;
+}
+
+.remove-btn:hover {
+    transform: scale(1.1);
+    background: #cc0000;
+}

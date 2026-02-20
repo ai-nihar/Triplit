@@ -1,0 +1,195 @@
+/* ========== 1. RESET & MESH BACKGROUND ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Mesh Gradient Background */
+    background: 
+        radial-gradient(circle at top left, #CFF3E8 0%, transparent 50%),
+        radial-gradient(circle at bottom right, #BEEDE6 0%, transparent 50%),
+        radial-gradient(circle at top right, #FFE8B6 0%, transparent 55%),
+        radial-gradient(circle at bottom left, #FFD9A0 0%, transparent 55%);
+    background-color: #F7F7F7;
+    padding: 20px;
+}
+
+/* ========== 2. MAIN CARD (SAND BEIGE BLUR) ========== */
+.login-card {
+    background-color: rgba(247, 247, 247, 0.9); /* Sand Beige with transparency */
+    backdrop-filter: blur(15px); /* The "Glass" blur effect */
+    width: 100%;
+    max-width: 950px;
+    min-height: 580px; 
+    height: 500px; /* Allows card to grow for extra Sign-Up fields */
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1); /* Deep soft shadow */
+    display: flex;
+    flex-direction: row; /* Forces side-by-side layout */
+    overflow: hidden;
+    padding: 20px;
+}
+
+/* ========== 3. FORM SECTION (LEFT side) ========== */
+.form-section {
+    flex: 1.2;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1 {
+    color: #6d6a63;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: #8d8a83;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    margin-left: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 10px 21px;
+    border-radius: 50px;
+    background-color: #cbf2e6; /* Mint Green */
+    border: 2px solid transparent; 
+    color: #4a4a4a;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    border-color: #23caa0; /* Green border from your request */
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(35, 202, 160, 0.2);
+}
+
+/* ========== 4. BUTTON & LINKS ========== */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    background: #e89b56; /* Terracotta Orange */
+    color: white;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 8px 20px rgba(232, 155, 86, 0.3);
+    transition: all 0.3s ease;
+}
+
+.login-btn:hover {
+    background: #d68a45;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(232, 155, 86, 0.5);
+}
+
+.signup-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: #8d8a83;
+}
+
+.signup-link a {
+    color: #e89b56;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+/* ========== 5. IMAGE SECTION (RIGHT side) ========== */
+.image-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+}
+
+.illustration {
+    width: 100%;
+    max-width: 380px;
+    height: auto;
+    object-fit: contain;
+    /* mix-blend-mode: multiply; Only use this if your image has a white background */
+}
+
+.brand-text {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.brand-text h2 {
+    color: #1a4d45;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.brand-text p {
+    color: #6d6a63;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+/* ========== 6. RESPONSIVE (MOBILE) ========== */
+/* ========== RESPONSIVE FOR MOBILE ========== */
+@media (max-width: 850px) {
+    .login-card {
+        flex-direction: column-reverse; /* Stacks image above the form */
+        width: 95%;
+        height: auto; /* Important: Let the card grow to fit the image */
+        max-width: 450px;
+        padding: 15px;
+    }
+
+    .image-section {
+        width: 100%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .illustration {
+        width: 100%; /* Take up full width of the container */
+        max-width: 300px; /* Prevents it from getting too huge on tablets */
+        height: auto; /* Keeps the aspect ratio perfect */
+        object-fit: contain; /* Ensures the FULL image is visible without cropping */
+        display: block;
+        margin: 0 auto;
+    }
+
+    .form-section {
+        padding: 20px 30px 40px 30px; /* More bottom padding for the form */
+    }
+
+    .brand-text h2 {
+        font-size: 1.8rem;
+    }
+}

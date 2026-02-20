@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Triplit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/signup.css')}}">
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="form-section">
+            <h1>Create Account</h1>
+
+            <form id="signupForm" method='post' action="/signup">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Choose a username" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter a password" required>
+                </div>
+
+                <button type="submit" class="login-btn">SIGN UP</button>
+            </form>
+
+            <p class="signup-link">
+                Already have an account? <a href="/login">Login</a>
+            </p>
+        </div>
+
+        <div class="image-section">
+            <img src="{{url_for('static',filename='images/signup-decor.avif')}}" alt="Travel Illustration"
+                class="illustration">
+            <div class="brand-text">
+                <h2>Triplit</h2>
+                <p>Join the Adventure</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/signup', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to login page
+                    window.location.href = '/login';
+                } else {
+                    // Show error message
+                    alert(data.message || 'Signup failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

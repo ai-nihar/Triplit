@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triplit Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/signin.css')}}">
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="form-section">
+            <h1>Login to Triplit</h1>
+
+            <form id="loginForm" method="post" action="/login">
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter a password" required>
+                </div>
+
+                <button type="submit" class="login-btn">LOGIN</button>
+
+                <div class="signup-link">
+                    Don't have an account? <a href="/signup">Sign up</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="image-section">
+            <img src="{{url_for('static',filename='images/signup-decor.avif')}}" alt="Triplit Traveller"
+                class="illustration">
+
+            <div class="brand-text">
+                <h2>Triplit</h2>
+                <p>Your Journey Starts Here</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Redirect to the provided URL or default to explore
+                    window.location.href = data.redirect || '/explore';
+                } else {
+                    // Show error message
+                    alert(data.message || 'Login failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

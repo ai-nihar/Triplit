@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- BASIC META -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Tripify — Discover India</title>
+  <meta name="description"
+    content="Plan your next great Indian adventure with Tripify. Explore beaches, heritage sites, mountains and more.">
+
+  <!-- BOOTSTRAP CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- BOOTSTRAP ICONS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- GOOGLE FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- CUSTOM CSS -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/explore.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/location-modal.css')}}">
+
+  <!-- Shared API helpers (used by wishlist/home/explore scripts) -->
+  <script src="{{url_for('static',filename='js/api-client.js')}}"></script>
+
+  <!-- Shared card component (MUST load before page-specific JS) -->
+  <script src="{{url_for('static',filename='js/location-card.js')}}?v=4"></script>
+  <script src="{{url_for('static',filename='js/wishlist.js')}}"></script>
+
+  <script src="{{url_for('static',filename='js/home.js')}}"></script>
+
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="80" tabindex="0">
+
+  {% include 'navbar.html' %}
+
+
+  <!-- ================= HERO / HOME ================= -->
+  <section id="home" class="hero">
+
+    <!-- DARK / FADE OVERLAY -->
+    <div class="hero-overlay"></div>
+
+    <div class="container">
+
+      <!-- IMAGE CARDS -->
+      <div class="image-cards">
+        <img src="{{url_for('static',filename='images/jaipur.jpg')}}" class="card-img left" alt="Jaipur">
+        <img src="{{url_for('static',filename='images/taj.jpg')}}" class="card-img center" alt="Taj Mahal">
+        <img src="{{url_for('static',filename='images/goa.avif')}}" class="card-img right" alt="Goa">
+      </div>
+
+      <!-- HERO CONTENT -->
+      <div class="hero-content">
+
+        <!-- SEARCH BAR -->
+        <div class="hero-search">
+          <div class="search-container">
+            <input id="homeSearchInput" type="text" placeholder="Places to go, things to do...">
+            <button class="search-icon" type="button" onclick="homeSearchSubmit(event)">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- TEXT -->
+        <h4 class="script-text">Let's Go For</h4>
+        <h1>TRAVEL IN INDIA</h1>
+        <p>
+          Pack your bags. Let's embark on an incredible journey through India.
+        </p>
+
+      </div>
+
+    </div>
+  </section>
+  <!-- =============== END HERO ================= -->
+
+  <!-- ================= FEATURED DESTINATIONS ================= -->
+  <div class="light">
+    <main class="container py-5">
+
+      <section class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="category-title fw-bold">🌟 Featured Destinations</h4>
+          <a href="/explore" class="see-more-link fw-bold" style="font-size: 0.95rem;">
+            View All <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </div>
+
+        <!-- Scroll wrapper with arrow buttons -->
+        <div style="position: relative;">
+          <button class="scroll-arrow scroll-left"
+            onclick="document.getElementById('featured-grid').scrollBy({left: -340, behavior: 'smooth'})"
+            title="Scroll left">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <div id="featured-grid" class="featured-scroll">
+            <div style="text-align: center; padding: 40px 0; width: 100%;">
+              <div class="spinner-border text-secondary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="text-muted mt-2">Loading destinations...</p>
+            </div>
+          </div>
+
+          <button class="scroll-arrow scroll-right"
+            onclick="document.getElementById('featured-grid').scrollBy({left: 340, behavior: 'smooth'})"
+            title="Scroll right">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <!-- =============== END FEATURED ================= -->
+
+  {% include 'footer.html' %}
+
+  <!-- BOOTSTRAP JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="{{url_for('static',filename='js/location-modal.js')}}?v=3"></script>
+
+</body>
+
+</html>

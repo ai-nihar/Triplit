@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore - Tripify</title>
+    <meta name="description" content="Discover handpicked destinations across India for your next great story.">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS: Global → Page → Modal -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/explore.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/location-modal.css')}}">
+
+    <!-- Auth state for JS -->
+    <script>
+        window.IS_LOGGED_IN = {{ 'true' if is_logged_in else 'false' }};
+        window.is_logged_in = {{ 'true' if is_logged_in else 'false' }};
+    </script>
+
+    <!-- Shared card component (MUST load before page-specific JS) -->
+    <script src="{{url_for('static',filename='js/location-card.js')}}?v=4"></script>
+</head>
+
+<body class="light">
+
+    {% include 'navbar.html' %}
+
+    <div class="mt-5">
+        <header class="box-glass">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4 pt-4">
+                    <h1 class="fw-bold">Discover India</h1>
+                    <div class="d-flex gap-2">
+                        <button onclick="window.location.href='/trip'" class="btn btn-outline-dark rounded-pill px-4 ">
+                            <i class="fa-solid fa-wand-magic-sparkles me-2 "></i> Create Trip
+                        </button>
+                        <button onclick="window.location.href='/wishlist'"
+                            class="btn btn-outline-dark rounded-pill px-4">
+                            <i class="fa-solid fa-heart me-2 "></i> My wishlist
+                        </button>
+                    </div>
+                </div>
+
+                <p class="text-dark opacity-75 mb-4 ">Handpicked destinations for your next great story.</p>
+
+                <div class="search-wrapper">
+                    <div class="search-bar-container">
+                        <input type="text" id="destinationSearch" placeholder="Where do you want to go?">
+                        <button class="search-btn" onclick="triggerSearch()">
+                            <i class="fa-solid fa-magnifying-glass text-light"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mt-4 flex-wrap align-items-center">
+                    <select id="categoryFilter" class="filter-select" onchange="applyFilters()">
+                        <option value="all">Category</option>
+                        <!-- Dynamically populated from /api/categories/all -->
+                    </select>
+                    <select id="regionFilter" class="filter-select" onchange="applyFilters()">
+                        <option value="all">Region</option>
+                        <!-- Dynamically populated from /api/regions/all -->
+                    </select>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <main class="py-5">
+        <div class="explore-grid-container">
+            <!-- Main grid — populated dynamically by explore.js -->
+            <div id="cards-grid" class="cards-grid">
+                <div id="locations-loading" class="col-12 text-center py-5" style="grid-column: 1 / -1;">
+                    <div class="spinner-border text-secondary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted mt-2">Loading destinations...</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination-container" class="pagination-container" style="display: none;">
+                <button class="pagination-btn" onclick="previousPage()" title="Previous">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div id="pagination-numbers" class="pagination-numbers"></div>
+                <button class="pagination-btn" onclick="nextPage()" title="Next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    {% include 'footer.html' %}
+
+    <!-- Location Detail Modal (only on pages that need it) -->
+    <div class="modal fade" id="locationDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-body p-0">
+                    <div id="wikiCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner" id="carouselItems"></div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#wikiCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#wikiCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h2 id="modalTitle" class="fw-bold mb-0"></h2>
+                            <div class="text-warning">
+                                <i class="fa-solid fa-star"></i> 5.0
+                                <span class="text-muted small fw-normal">(Wikipedia Choice)</span>
+                            </div>
+                        </div>
+                        <p id="modalDescription" class="text-muted"></p>
+                        <hr>
+                        <div class="d-flex gap-3">
+                            <a id="modalMapLink" target="_blank"
+                                class="btn btn-outline-primary rounded-pill flex-grow-1">
+                                <i class="fa-solid fa-map-location-dot"></i> View on Map
+                            </a>
+                            <button class="btn btn-dark rounded-pill flex-grow-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS: Bootstrap → Wishlist → Modal → Explore -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static',filename='js/api-client.js')}}"></script>
+    <script src="{{url_for('static',filename='js/wishlist.js')}}"></script>
+    <script src="{{url_for('static',filename='js/location-modal.js')}}?v=3"></script>
+    <script src="{{url_for('static',filename='js/explore.js')}}?v=4"></script>
+</body>
+
+</html>

@@ -1,0 +1,127 @@
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+
+    <div class="container-fluid">
+
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="#1E293B" class="bi bi-airplane-fill"
+                viewBox="0 0 16 16">
+                <path
+                    d="M6.428 1.151C6.708.591 7.213 0 8 0s1.292.592 1.572 1.151C9.861 1.73 10 2.431 10 3v3.691l5.17 2.585a1.5 1.5 0 0 1 .83 1.342V12a.5.5 0 0 1-.582.493l-5.507-.918-.375 2.253 1.318 1.318A.5.5 0 0 1 10.5 16h-5a.5.5 0 0 1-.354-.854l1.319-1.318-.376-2.253-5.507.918A.5.5 0 0 1 0 12v-1.382a1.5 1.5 0 0 1 .83-1.342L6 6.691V3c0-.568.14-1.271.428-1.849" />
+            </svg>
+            <span style="color:#1E293B;font-weight:bold;">Triplit</span>
+        </a>
+
+        <!-- MOBILE TOGGLE -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="search-container nav-search" id="navbarSearch">
+            <i class="bi bi-search"></i>
+            <input id="navbarSearchInput" type="text" placeholder="  Places to go, things to do...">
+            <button class="nav-search-btn" type="button" onclick="navbarSearchSubmit(event)">Search</button>
+        </div>
+
+        <!-- NAV LINKS -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto fs-5">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'home' %}active{% endif %} text-dark" href="/">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.endpoint == 'explore' %}active{% endif %}"
+                        href="/explore">Explore</a>
+                </li>
+
+                <li class="nav-item"><a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+                        href="/dashboard" id="trips-link">Trips</a></li>
+
+
+                <li class="nav-item px-lg-2">
+                    <a class="nav-link position-relative {% if request.endpoint == 'wishlist_page' %}active{% endif %}"
+                        href="/wishlist">
+                        <i class="bi bi-heart fs-5"></i>
+                        <span id="wishlist-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="display: none;">0</span>
+                    </a>
+                </li>
+
+                {% if is_logged_in %}
+                <!-- Direct link removed as per user preference -->
+                {% endif %}
+
+                <!-- ═══════ USER AVATAR / LOGIN ═══════ -->
+                <li class="nav-item">
+                    {% if is_logged_in %}
+                    <div class="nav-avatar-wrapper" id="nav-avatar-wrapper">
+                        <button class="nav-avatar-btn" id="nav-avatar-btn" type="button" title="Account menu">
+                            <div class="nav-avatar-circle">
+                                {{ current_user['full_name'][0] | upper if current_user and current_user['full_name']
+                                else 'U' }}
+                            </div>
+                        </button>
+
+                        <!-- Profile Dropdown -->
+                        <div class="nav-avatar-dropdown" id="nav-avatar-dropdown">
+                            <a href="/profile" class="dropdown-item" id="dropdown-profile">
+                                <i class="fa-solid fa-user"></i>
+                                My Profile
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item dropdown-logout"
+                                id="dropdown-logout">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                Log Out
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a class="nav-link" href="/login" title="Login / Sign Up">
+                        <i class="bi bi-person-circle fs-4" style="color: #1E293B;"></i>
+                    </a>
+                    {% endif %}
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>
+<!-- =============== END NAVBAR =============== -->
+
+<!-- Define global authentication state for JavaScript -->
+<script>
+    window.is_logged_in = {{ 'true' if is_logged_in else 'false' }};
+</script>
+<script src="{{ url_for('static', filename='js/auth-check.js') }}"></script>
+<script src="{{ url_for('static', filename='js/location-search.js') }}"></script>
+
+<!-- ═══════ Avatar Dropdown Toggle Logic ═══════ -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toggleBtn = document.getElementById('nav-avatar-btn');
+        var dropdown = document.getElementById('nav-avatar-dropdown');
+        if (!toggleBtn || !dropdown) return;
+
+        // Toggle on avatar click
+        toggleBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            dropdown.classList.toggle('is-open');
+        });
+
+        // Close when clicking anywhere outside
+        document.addEventListener('click', function (e) {
+            if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+                dropdown.classList.remove('is-open');
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') dropdown.classList.remove('is-open');
+        });
+    });
+</script>

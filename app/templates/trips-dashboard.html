@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Trips — Tripify</title>
+    <meta name="description" content="Manage your draft and confirmed travel itineraries in one place." />
+
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Global + Page CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+</head>
+
+<body class="light">
+
+    <!-- Global Navbar -->
+    {% include 'navbar.html' %}
+
+    <!-- ═══════════════════════════════════════════
+         HERO HEADER (matches Explore's .box-glass)
+         ═══════════════════════════════════════════ -->
+    <div class="mt-5">
+        <header class="trips-hero">
+            <div class="container py-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 pt-3">
+                    <div>
+                        <h1 class="fw-bold mb-1">My Trips</h1>
+                        <p class="trips-subtitle mb-0">Manage your drafts and confirmed itineraries in one place.</p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button onclick="window.location.href='/explore'"
+                            class="btn btn-outline-dark rounded-pill px-4">
+                            <i class="fa-solid fa-compass me-2"></i> Explore
+                        </button>
+                        <button onclick="window.location.href='/trip'"
+                            class="btn btn-primary rounded-pill px-4 btn-create-trip">
+                            <i class="fa-solid fa-plus me-2"></i> Create Trip
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT — Two columns
+         ═══════════════════════════════════════════ -->
+    <main class="container py-5">
+        <div class="trips-columns">
+
+            <!-- ──────── LEFT COLUMN: DRAFT TRIPS ──────── -->
+            <section class="trips-column" id="draft-trips-panel">
+                <div class="column-header-row">
+                    <div class="column-title-group">
+                        <h2 class="column-title">Draft Trips</h2>
+                        <span class="badge-pill badge-draft" id="draft-badge">{{ draft_trips|length }} Drafts</span>
+                    </div>
+                    <p class="column-subtitle">Unfinished itineraries in progress</p>
+                </div>
+
+                <!-- Delete Draft Trips Action Area -->
+                <div class="d-flex gap-2" id="delete-action-container">
+                    <button id="btn-delete-drafts"
+                        class="btn btn-outline-danger rounded-pill px-4 py-2 fw-semibold shadow-sm">
+                        <i class="fa-solid fa-trash me-2"></i> Delete Drafts
+                    </button>
+                    <!-- Cancel button will be injected here via JS -->
+                </div>
+
+                <div class="trip-cards-list" id="draft-trips-list">
+                    {% if not draft_trips %}
+                    <div class="trips-empty-state">
+                        <i class="fa-solid fa-pencil-ruler"></i>
+                        <h3>No draft trips yet</h3>
+                        <p>Click "Create New Draft" below to start planning.</p>
+                    </div>
+                    {% else %}
+                    {% for trip in draft_trips %}
+                    <div class="draft-card" data-trip-id="{{ trip.trip_id }}" data-status="draft"
+                        id="draft-card-{{ trip.trip_id }}">
+                        <!-- Checkbox for Delete Mode (Hidden by default) -->
+                        <div class="checkbox-wrapper d-none">
+                            <input type="checkbox" class="trip-checkbox" data-trip-id="{{ trip.trip_id }}"
+                                id="checkbox-{{ trip.trip_id }}" />
+                        </div>
+                        <div class="card-icon draft-icon">
+                            <i
+                                class="fa-solid {% if trip.pace == 'relaxed' %}fa-umbrella-beach{% elif trip.pace == 'packed' %}fa-bolt{% else %}fa-route{% endif %}"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">{{ trip.trip_name }}</div>
+                            <div class="card-meta">
+                                <i class="fa-regular fa-clock"></i>
+                                {{ trip.created_at.strftime('%d %b %Y') if trip.created_at else 'Recently' }}
+                                {% if trip.start_region or trip.end_region %}
+                                · {{ trip.start_region }}{% if trip.start_region and trip.end_region %} → {% endif %}{{
+                                trip.end_region }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="card-action">
+                            <button class="btn-select"
+                                onclick="window.location.href='/draft_trip/{{ trip.trip_id }}'">
+                                Open
+                            </button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+
+                <!-- Create New Draft -->
+                <button class="btn-create-draft" id="btn-create-draft" onclick="window.location.href='/trip'">
+                    <i class="fa-solid fa-plus"></i>
+                    Create New Draft
+                </button>
+            </section>
+
+            <!-- ──────── RIGHT COLUMN: FINAL TRIPS ──────── -->
+            <section class="trips-column" id="final-trips-panel">
+                <div class="column-header-row">
+                    <div class="column-title-group">
+                        <h2 class="column-title">Final Trips</h2>
+                        <span class="badge-pill badge-final" id="final-badge">{{ final_trips|length }} Active</span>
+                    </div>
+                    <p class="column-subtitle">Confirmed and active itineraries</p>
+                </div>
+
+                <div class="trip-cards-list" id="final-trips-list">
+                    {% if not final_trips %}
+                    <div class="trips-empty-state">
+                        <i class="fa-solid fa-check-double"></i>
+                        <h3>No confirmed trips yet</h3>
+                        <p>Finalize a draft to see it here.</p>
+                    </div>
+                    {% else %}
+                    {% for trip in final_trips %}
+                    <a href="/itinerary/{{ trip.trip_id }}" class="final-trip-link">
+                        <div class="final-card" data-trip-id="{{ trip.trip_id }}">
+                            <div class="card-icon final-icon">
+                                <i
+                                    class="fa-solid {% if trip.pace == 'relaxed' %}fa-umbrella-beach{% elif trip.pace == 'packed' %}fa-bolt{% else %}fa-route{% endif %}"></i>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-title">{{ trip.trip_name }}</div>
+                                <div class="card-status">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    Confirmed
+                                </div>
+                                <div class="card-dates">
+                                    {% if trip.start_region or trip.end_region %}
+                                    {{ trip.start_region }}{% if trip.start_region and trip.end_region %} → {% endif
+                                    %}{{ trip.end_region }}
+                                    {% endif %}
+                                    {% if trip.trip_days %} · {{ trip.trip_days }} days{% endif %}
+                                </div>
+                            </div>
+                            <div class="card-action">
+                                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Global Footer -->
+    {% include 'footer.html' %}
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/api-client.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}?v=2"></script>
+
+</body>
+
+</html>

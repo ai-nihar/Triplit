@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Your Trip — Tripify</title>
+    <meta name="description" content="Select locations, manage your wishlist, and optimize your travel route.">
+
+    <!-- Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/draft-trip.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/location-modal.css')}}">
+</head>
+
+<body class="light">
+
+    {% include 'navbar.html' %}
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <div class="mt-5">
+        <header class="box-glass">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center mb-4 pt-4">
+                    <h1 class="fw-bold">Plan Your Trip</h1>
+                    <div class="d-flex gap-2">
+                        <button onclick="window.location.href='/dashboard'"
+                            class="btn btn-outline-primary rounded-pill px-4">
+                            <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+                        </button>
+                    </div>
+                </div>
+                <p class="text-dark opacity-75 mb-4">Organize locations and optimize your travel route.</p>
+            </div>
+        </header>
+    </div>
+
+    <!-- ═══════════ MAIN DASHBOARD ═══════════ -->
+    <main class="py-4">
+        <div class="container-fluid dashboard-container">
+
+            <!-- ████████ ROW 1: AVAILABLE LOCATIONS (empty by default) ████████ -->
+            <section class="full-width-section" id="available-section">
+                <div class="section-header-row">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Available Locations</h2>
+                        <p class="section-subtitle">Search or get AI suggestions to find locations for your trip</p>
+                    </div>
+                </div>
+                <!-- Action bar: AI Suggestions + Search -->
+                <div class="available-actions-bar">
+                    <button id="ai-suggest-btn" class="btn-ai-suggest" onclick="getAISuggestions()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Give AI Suggestions
+                    </button>
+                    <div class="search-input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-input-icon"></i>
+                        <input type="text" id="location-search-input" class="search-input-field"
+                            placeholder="Search locations by name, region, or category..."
+                            onkeyup="handleSearchKeyup(event)">
+                        <button class="btn-search-go" onclick="searchLocations()">Search</button>
+                    </div>
+                </div>
+                <div class="scroll-wrapper">
+                    <button class="scroll-btn left" onclick="scrollSection('available-locations-scroll', -320)">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div id="available-locations-scroll" class="horizontal-scroll-row">
+                        <!-- Empty by default — populated by AI suggestions or search -->
+                        <div class="scroll-empty-state" id="available-empty-state">
+                            <i class="fa-solid fa-compass"></i>
+                            <p>No locations loaded yet</p>
+                            <small>Click "✨ Give AI Suggestions" or search to discover locations</small>
+                        </div>
+                    </div>
+                    <button class="scroll-btn right" onclick="scrollSection('available-locations-scroll', 320)">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ████████ ROW 2: MY WISHLIST (horizontal scroll) ████████ -->
+            <section class="full-width-section" id="wishlist-section">
+                <div class="section-header-row">
+                    <div>
+                        <h2 class="section-title"><i class="fa-solid fa-heart"></i> My Wishlist</h2>
+                        <p class="section-subtitle">Locations you've saved from Explore</p>
+                    </div>
+                    <span class="badge-count" id="wishlist-count-badge">0</span>
+                </div>
+                <div class="scroll-wrapper">
+                    <button class="scroll-btn left" onclick="scrollSection('wishlist-scroll', -320)">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <div id="wishlist-scroll" class="horizontal-scroll-row">
+                        <div class="scroll-loading">
+                            <div class="spinner-border spinner-border-sm text-secondary"></div>
+                            <span>Loading wishlist...</span>
+                        </div>
+                    </div>
+                    <button class="scroll-btn right" onclick="scrollSection('wishlist-scroll', 320)">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ████████ ROW 3: SELECTED + ROUTE (two columns) ████████ -->
+            <div class="bottom-columns">
+
+                <!-- LEFT: Selected Locations (vertical list) -->
+                <section class="panel-section" id="selected-panel">
+                    <div class="section-header-row">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-list-check"></i> Selected Locations</h2>
+                        </div>
+                        <span class="badge-count badge-blue" id="selected-count">0</span>
+                    </div>
+                    <div id="selected-locations-list" class="selected-list">
+                        <div class="empty-state">
+                            <i class="fa-solid fa-map-marked-alt"></i>
+                            <p>No locations selected yet.</p>
+                            <small>Add locations from above to get started!</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RIGHT: Route Optimization -->
+                <section class="panel-section" id="route-panel">
+                    <div class="section-header-row">
+                        <div>
+                            <h2 class="section-title"><i class="fa-solid fa-route"></i> Optimize Route</h2>
+                            <p class="section-subtitle">Calculate the best travel sequence</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-12 col-md-6">
+                            <label for="route-start-select" class="form-label mb-1">Start at (optional)</label>
+                            <select id="route-start-select" class="form-select form-select-sm">
+                                <option value="">Auto (best start)</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label for="route-end-select" class="form-label mb-1">End at (optional)</label>
+                            <select id="route-end-select" class="form-select form-select-sm">
+                                <option value="">Auto (best end)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button id="calculate-route-btn" class="btn-calculate-route">
+                        <i class="fa-solid fa-route"></i> Calculate Best Route
+                    </button>
+
+                    <div id="route-results" class="route-results">
+                        <div class="empty-state-route">
+                            <i class="fa-solid fa-directions"></i>
+                            <p>Route will appear here</p>
+                            <small>Select locations and click "Calculate Best Route"</small>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+    {% include 'footer.html' %}
+
+    <!-- Location Detail Modal -->
+    <div class="modal fade" id="locationDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4">
+                <div class="modal-body p-0">
+                    <div id="wikiCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner" id="carouselItems"></div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#wikiCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#wikiCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h2 id="modalTitle" class="fw-bold mb-0"></h2>
+                            <div class="text-warning">
+                                <i class="fa-solid fa-star"></i> 5.0
+                                <span class="text-muted small fw-normal">(Wikipedia Choice)</span>
+                            </div>
+                        </div>
+                        <p id="modalDescription" class="text-muted"></p>
+                        <hr>
+                        <div class="d-flex gap-3">
+                            <a id="modalMapLink" target="_blank"
+                                class="btn btn-outline-primary rounded-pill flex-grow-1">
+                                <i class="fa-solid fa-map-location-dot"></i> View on Map
+                            </a>
+                            <button class="btn btn-dark rounded-pill flex-grow-1" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inject global trip data for JS
+        const CURRENT_TRIP_ID = {{ trip_id if trip_id else 'null' }};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{url_for('static',filename='js/api-client.js')}}"></script>
+    <script src="{{url_for('static',filename='js/draft.js')}}?v=2"></script>
+    <script src="{{url_for('static',filename='js/location-modal.js')}}?v=3"></script>
+</body>
+
+</html>
